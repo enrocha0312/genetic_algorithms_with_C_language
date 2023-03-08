@@ -77,9 +77,9 @@ int * indexAssociate(int binaryVector[])
 			}
 		}
 	}	
-	for (int m = 0; m<tam; m++ )
+	for (int m = 0; m<size; m++ )
 	{
-		for(int n=0; n<tam; n++)
+		for(int n=0; n<size; n++)
 		{
 			if (auxVector[m] == binaryVector[n])
 			{
@@ -105,5 +105,18 @@ Chromosome initializePopulation(int m, int n){
 		}
 	}
 	return population;
+}
+
+//Just a Fitness Function for example
+int Sphere(int v[], int size){
+	// the user can use/create another
+	for(int i = 0; i<size; i++){
+		v[i] = v[i] * v[i];
+	}
+	int sum = 0;
+	for(int i = 0; i<tamanho; i++){
+		sum += vetor[i];
+	}
+	return sum;
 }
 
