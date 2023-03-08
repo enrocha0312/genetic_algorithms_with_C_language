@@ -21,6 +21,43 @@ Cromossomo * chromossomeAlloc(int size)
     return auxiliar;
 }
 
+int * descendingOrder(int v [], int n)
+{
+	int copy[n];
+	for (int i=0; i<n; i++)
+	{
+		copy[i]=v[i];
+	}	
+	int i, j, temp;
+	for (i=0; i<n; ++i){
+		for(j=  i+1; j<n; ++j){
+			if(copy[i]<copy[j]){
+				temp = copia[i];
+				copy[i]= copy[j];
+				copy[j]= temp;
+					
+			}
+		}
+	}
+	int *ret;
+	ret = copy;
+	return ret;
+}
+
+int sumOfVector(int v[]){
+	int sum = 0;
+	int size = sizeof(v)/sizeof(int)
+	for(int i = 0; i<size; i++){
+		sum += vetor[i];
+	}
+	return sum;
+}
+
+int randomRange(int min, int max)
+{
+    return ( rand() % ( max - min ) ) + min;
+}
+
 int * indexAssociate(int binaryVector[])
 {
 	int size = sizeof(binaryVector)/sizeof(int);
