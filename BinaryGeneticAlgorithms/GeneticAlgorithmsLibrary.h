@@ -34,8 +34,7 @@ int * descendingOrder(int v [], int n)
 			if(copy[i]<copy[j]){
 				temp = copia[i];
 				copy[i]= copy[j];
-				copy[j]= temp;
-					
+				copy[j]= temp;	
 			}
 		}
 	}
@@ -90,5 +89,21 @@ int * indexAssociate(int binaryVector[])
 		}
 	}
 	return indexes;
+}
+
+Chromosome initializePopulation(int m, int n){
+	// m = number of Chromosomes
+	// n = number of Genes
+	struct Chromosome *population = chromosomeAlloc(m);
+	srand(time(NULL));
+			
+	for (int i =0; i<m; i++){
+		population[i].Genes =  intAlloc(n);
+		population[i].numGenes = n;
+		for (int j=0; j<n; j++){
+		population[i].Genes[j] = randomRange(0,2);
+		}
+	}
+	return population;
 }
 
