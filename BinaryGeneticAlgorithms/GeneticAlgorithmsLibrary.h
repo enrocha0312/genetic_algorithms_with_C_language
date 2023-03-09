@@ -14,7 +14,7 @@ int * intAlloc (int size)
     return aux;
 }
 
-Cromossomo * chromossomeAlloc(int size)
+Chromosome * chromosomeAlloc(int size)
 {
 	Chromossome *auxiliar;
     auxiliar =(Chromossome *) malloc(size*sizeof(Chromosome));
@@ -114,9 +114,101 @@ int Sphere(int v[], int size){
 		v[i] = v[i] * v[i];
 	}
 	int sum = 0;
-	for(int i = 0; i<tamanho; i++){
+	for(int i = 0; i<size; i++){
 		sum += vetor[i];
 	}
 	return sum;
+}
+
+//ROULETTE WHEEL METHOD
+Chromosome * Selection(Chromosome *population, int size){
+	
+	Chromosome *parents = chromosomeAlloc(2); //two parents
+	//CALCULATE THE FITNESS OF THE CHROMOSOMES OF THE POPULATION
+	for(int i = 0; i<size; i++)
+	{
+		population[i].fitnessValue = Sphere(population[i].Genes, size);
+	}
+	//NORMALIZE THE FITNESS VALUES
+	
+	int *normalizedFitness = intAlloc(size);
+	int *fitnessVector = intAlloc(size);
+	for(int i = 0; i<size; i++)
+	{
+		fitnessVector[i] = population[i].fitnessValue;	
+	}
+	
+	for(int i = 0; i<size; i++)
+	{
+		normalizedFitness[i] = population[i].fitnessValue /	sumOfVector(fitnessVector, size);
+	}		
+	
+	free(fitnesVector);
+	
+	int *indexes = indexAssociate(normalizedFitness);
+	
+	
+	int *orderedNormalizedFitness = descendingOrder(normalizedFitness, size);
+
+	
+	struct Chromosome *tempPopulation = chromosomeAlloc(size);//TEMPORARY POPULATION
+	//FOR OPERATIONS
+	
+	for(int i=0; i<size; i++)
+	{
+		tempPopulation[i].fitnessValue = normalizedFitness[indexes[i]];
+		tempPopulation[i].numGenes = population[i].numGenes;
+	}
+	
+	//COPY GENES
+	
+	for(int i =0; i<size; i++)
+	{
+		for(int j=0; j<tempPopulation[i].numGenes; j++)
+		{
+			tempPopulation[i].Genes[j] = population[i].Genes[indexes[j]];
+		}
+	}
+	// NOTE THAT THE TEMPPOPULATION IS DESCENDING ORDERED
+	
+	int cumSum [size];
+	
+	for (int i = 0; i<size; i++){
+		for(int j=i; j<size; j++){
+			cumSum[i] = cumSum[i] + tempPopulation[j].fitnessValue;
+		}		
+	} //LOOP WHICH CREATES A VECTOR OF CUMULATIVE SUM
+	
+	int R1 = rand() % 100; // values between 0 and 100
+	
+	int indexParent1, indexParent2;
+	
+	indexParent1 = size;//just setting a value
+	
+	for (int i = 0; i<size ; i++){
+		if(R1 > cumSum[i]*100){
+			indexParent1 = i-1;//the position lower than the position of cumulative sum
+			break;
+		}
+	}
+	
+	indexParent2 = indexParent1; //by fixing that, we will never have the same value for both
+	
+	while (indexParent2 == indexParent1){
+		int R2 = rand() % 100;
+		for(int i =0; i<size; i++){
+			if (R2>cumSum[i] * 100)
+			{
+				indexParent2 = i -1;
+				break;
+			}
+
+		}
+	}
+	
+	parents[0] = tempPopulation[indexParent1];
+	parents[1] = tempPopulation[indexParent2];
+	
+	return parents;
 }
 
