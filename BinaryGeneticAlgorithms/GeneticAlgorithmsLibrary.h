@@ -212,3 +212,16 @@ Chromosome * Selection(Chromosome *population, int size){
 	return parents;
 }
 
+Chromosome Mutation (Chromosome x, int Pm){
+	//PM = Mutation Rate(between 0 and 100)
+	srand(time(NULL));	
+	for(int i =0; i<x.numGenes; i++){
+		int R = rand() % 100; // values between 0 and 100
+		if (R<Pm){
+			x.Genes[i] = ~x.Genes[i]; // changes bit;
+		}
+	}
+	return x;
+}
+
+
