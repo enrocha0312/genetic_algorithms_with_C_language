@@ -9,14 +9,14 @@ struct Chromosome{
 
 int * intAlloc (int size)
 {
-    int *aux;
+    int *aux = NULL;
     aux =(int *) malloc(size*sizeof(int));   
     return aux;
 }
 
 Chromosome * chromosomeAlloc(int size)
 {
-	Chromossome *auxiliar;
+	Chromossome *auxiliar = NULL;
     auxiliar =(Chromossome *) malloc(size*sizeof(Chromosome));
     return auxiliar;
 }
@@ -32,7 +32,7 @@ int * descendingOrder(int v [], int n)
 	for (i=0; i<n; ++i){
 		for(j=  i+1; j<n; ++j){
 			if(copy[i]<copy[j]){
-				temp = copia[i];
+				temp = copy[i];
 				copy[i]= copy[j];
 				copy[j]= temp;	
 			}
@@ -225,3 +225,85 @@ Chromosome Mutation (Chromosome x, int Pm){
 }
 
 
+
+Chromosome * Crossover(Chromosome *parents, int Pc, char crossoverType[]){
+	
+	struct Chromosome *children = NULL;
+	//initialize the children
+	for(int i = 0; i<2 ; i++){
+		children[i].Genes = alocaInteiro(parents[i].numGenes);
+		children[i].numGenes = parents[i].numGenes;		
+	}
+	
+		
+	if(crossoverType == "single")
+	{
+			int upperLimit = parents[0].numGenes -1;
+			int lowerLimit = 0;
+			srand(time(NULL));
+			int Cross_P = randomRange(lowerLimit, upperLimit);
+			
+			//copy the part 1 to the child vector (the parent until the crossover point)
+			for(int i = 0; i < Cross_P; i++){
+				children[0].Genes[i] = parents[0].Genes[i];
+			}
+			//copy the part 2 to the child vector (the second parent until the end)
+			for(int j = 0; j<parents[0].numGenes - Cross_P; j++){
+				children[0].Genes[Cross_P + j] = parents[1].Genes[Cross_P +j];
+			}
+			// Agora o mesmo processo com o filho 2, porém obviamente trocando os parents
+			for(int i = 0; i < Cross_P; i++){
+				children[1].Genes[i] = parents[1].Genes[i];
+			}
+			// copia parte 2 para o vetor filho (o segundo pai do crossover até o fim)
+			for(int j = 0; j<parents[1].numGenes - Cross_P; j++){
+				children[1].Genes[Cross_P + j] = parents[0].Genes[Cross_P +j];
+			}
+	}
+		
+	if(crossoverType == "double")
+	{
+			int upperLimit = parents[0].numGenes -1;
+			int lowerLimit = 1;
+			srand(time(NULL));
+			int Cross_P1 = randomRange(lowerLimit, upperLimit);
+			int Cross_P2 = Cross_P1;
+			while(Cross_P2 == Cross_P1)
+			{
+				Cross_P2 = randomRange(lowerLimit, upperLimit); // garantir que o ponto de crossover nao seja igual
+			}
+			// usar if para garantir que cross_p1<cross_p2
+			if(Cross_P2 < Cross_P1)
+			{
+				int temp = Cross_P1;
+				Cross_P1 = Cross_P2;
+				Cross_P2 = temp;
+			}
+			//copia o pai 1 até Cross_P1 ao filho 1
+			for(int i = 0; i < Cross_P1; i++){
+				children[0].Genes[i] = parents[0].Genes[i];
+			}
+			// copia o pai 2 entre Cross_P1 e Cross_P2
+			for(int j = 0; j<(Cross_P2 - Cross_P1); j++){
+				children[0].Genes[Cross_P1 + j] = parents[1].Genes[Cross_P1 +j];
+			}
+			// copia o pa1 a partir de Cross_p2
+			for(int k = 0; k<parents[0].numGenes -  Cross_P2; k++){
+				children[0].Genes[Cross_P2 + k] = parents[0].Genes[Cross_P2 +k];
+			}
+			//Filho 2
+			for(int i = 0; i < Cross_P1; i++){
+				children[1].Genes[i] = parents[1].Genes[i];
+			}
+			// copia o pai 2 entre Cross_P1 e Cross_P2
+			for(int j = 0; j<(Cross_P2 - Cross_P1); j++){
+				children[1].Genes[Cross_P1 + j] = parents[0].Genes[Cross_P1 +j];
+			}
+			// copia o pa1 a partir de Cross_p2
+			for(int k = 0; k<parents[1].numGenes -  Cross_P2; k++){
+				children[1].Genes[Cross_P2 + k] = parents[1].Genes[Cross_P2 +k];
+			}
+	}
+	
+	return children;
+}
